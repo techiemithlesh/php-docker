@@ -1,0 +1,35 @@
+version: '3' # DOCKER VERSION
+
+services:
+  www:
+    
+    
+    image: 'php:7.4-apache'
+    
+    volumes:
+      - './:/var/www/html' # Sync project directory with web dir
+    ports:
+      - "80:80"
+      - "443:443"
+    
+    depends_on:
+      - db
+
+  db:
+    image: 'mysql:latest'
+    environment: 
+      MYSQL_DATABASE: php_docker
+      MYSQL_USER: php_docker
+      MYSQL_PASSWORD: password
+      MYSQL_ALLOW_EMPTY_PASSWORD: '1' # Equivalent to true
+    
+    volumes:
+      - "./db:/docker-entrypoint-initdb.d" # Place your SQL scripts here
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8001:80"
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
